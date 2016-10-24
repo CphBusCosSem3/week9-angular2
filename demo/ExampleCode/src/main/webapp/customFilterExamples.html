@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!--
+Tutorial based on: https://scotch.io/tutorials/building-custom-angularjs-filters
+
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+
+    </head>
+    <body ng-app="MyApp" ng-controller="MainCtrl as ctrl">
+        <!--<div ng-repeat="meeting in ctrl.meetings | filter:{chairman : 'Peter', room: 201} | limitTo: 1">-->
+        <div ng-repeat="meeting in ctrl.meetings">
+            {{meeting.index | ordinal}} meeting on {{meeting.date}} by {{meeting.chairman}} in {{meeting.room}}
+        </div>
+        <!--<div ng-repeat="person in ctrl.persons | filter:{gender:'female'}">-->
+        <input type="text" ng-model="ctrl.arg">
+        <div ng-repeat="person in ctrl.persons  | female:true | schoolChild: ctrl.arg">
+            <span ng-bind="person.name "></span> is {{person.age}} years old
+        </div>
+        <div><h3>A filter applied to the properties of an object: </h3>
+            <ul>
+                <li ng-repeat="(key, value) in ctrl.obj | objFilter">{{key}} and {{value}}</li>
+            </ul>
+        </div>
+        <script>
+            var app = angular.module('MyApp', []);
+            app.controller('MainCtrl', [function() {
+                var self = this;
+                self.meetings = [
+                    {index: 1, date: '2015-02-13', chairman: 'Peter Frederiksen', room: 201},
+                    {index: 2, date: '2015-03-13', chairman: 'Peter Henriksen', room: 201},
+                    {index: 3, date: '2015-04-12', chairman: 'Peter Albertsen', room: 211},
+                    {index: 4, date: '2015-04-12', chairman: 'Palle Frederiksen', room: 211},
+                    {index: 5, date: '2015-04-12', chairman: 'Poul Frederiksen', room: 201},
+                    
+                ];
+                self.persons = [
+                    {name: 'Hans', gender: 'male', age: 81},
+                    {name: 'Grethe', gender: 'female', age: 8},
+                    {name: 'Frederik', gender: 'male', age: 61},
+                    {name: 'Hassan', gender: 'male', age: 11},
+                    {name: 'Karen', gender: 'female', age: 13},
+                ];
+                self.obj = {
+                    name: 'Jesper',
+                    age: 19,
+                    address: 'Langgade 12',
+                    city: 'Valby'
+                };
+                
+            }]);
+        //filter used for single value
+            app.filter('ordinal', [function() {
+                // Create the return function and set the required parameter name to **number**
+                return function(number) {
+                    // Ensure that the passed in data is a number
+                    if(isNaN(number) || number < 1) {
+                      // If the data is not a number or is less than one (thus not having a cardinal value) return it unmodified.
+                      return number;
+                    } else {
+                        // If the data we are applying the filter to is a number, perform the actions to check it's ordinal suffix and apply it.
+                        var lastDigit = number % 10;
+
+                        if(lastDigit === 1) {
+                          return number + 'st'
+                        } else if(lastDigit === 2) {
+                          return number + 'nd'
+                        } else if (lastDigit === 3) {
+                          return number + 'rd'
+                        } else if (lastDigit > 3) {
+                          return number + 'th'
+                        }
+                    }
+                }
+            }]);
+        //filter used for array of values
+            app.filter('female', function(){
+                return function(input, isFemale){ //input here is an array
+                    var output = [];
+                    angular.forEach(input, function(person){ //first parameter = the collection, second is function with parameter: item in collection.
+                        if(person.gender === 'female' && isFemale === true){
+                            output.push(person);
+                        }
+                        if(person.gender === 'male' && isFemale === false){
+                            output.push(person); 
+                        }
+                    });
+                    return output;
+                };
+            });
+            app.filter('schoolChild', [function(){
+                    return function(input, arg){
+                        console.log(arg);
+                        var children = [];
+                        angular.forEach(input, function(person){
+                            if(person.age >= 6 && person.age <= 15)
+                                children.push(person);
+                        });
+                        return children;
+                    };
+            }]);
+            app.filter('objFilter', [function(){
+                    return function(obj){
+                        var outputObj = {};
+                        angular.forEach(obj, function(value, key){
+                            console.log(key + " har værdi: " + value);
+                            if(key !== 'city')
+                                outputObj[key] = value;
+                        });
+                        return outputObj;
+                    };
+            }]);
+        </script>
+    </body>
+</html>

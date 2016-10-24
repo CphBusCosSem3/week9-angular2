@@ -1,0 +1,38 @@
+    <!DOCTYPE html>
+<!--
+This example shows how a build-in service: $log is injected into the controller.
+Section 2 shows how to solve the problem of ephemeral controllers (state gets lost and recreated) by using service (through a factory)
+alternatives to factory syntax is service (where a service funtion as an object is created seperately and passed in or Provider that is used with .config if some configuration needs to happen before the app loades.
+
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.js"></script>
+        
+    </head>
+    <body data-ng-app="myApp">
+        <div ng-controller="Main as ctrl">
+<!--            <div ng-repeat="item in ctrl.arr">
+                
+            </div>-->
+        </div>
+       
+            <!--************************************-->
+        <script type="text/javascript">
+            var app = angular.module('myApp', []);
+            app.controller('Main', function(MyService){
+                var self = this;
+                self.arr = new Array(32+1).join((Math.random().toString(36)+'00000000000000000').slice(2, 18)).slice(0, 32);
+                console.log(self.arr);
+                (function(){ MyService.test(); })();
+            });
+            app.service('MyService', function(){
+                var self = this;
+                self.test = function(){alert("test");};
+            });
+            </script>
+    </body>
+</html>
