@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+Purpose: show how we use the link attribute of directive with 3 parameters:
+scope: the parent scope = the controller scope from where the directive element is placed in the dom
+element: the element that contains the directive
+attr: an array of all the attributes and their values inside the element.
+http://www.sitepoint.com/practical-guide-angularjs-directives/
+
+-->
+<html>
+<head>
+  <title></title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.js"></script>
+<!--  <style>
+    name-list { color:blue; } /* element name */
+    [name-list] { color:red; } /* attribute */
+    .name-list { color:green; } /* class member */
+  </style>-->
+</head>
+<body ng-app="app">
+   <div my-dom-directive="" test-attr="Hejsa">Click Me!</div>
+   <script>
+    var controller = function($scope) {
+        $scope.nameList = ['Peter', 'Karen', 'Soniya', 'Hakim'];
+        $scope.submitName = function(){
+            $scope.nameList.push($scope.name);
+        };
+    };
+
+    angular.module('app', [])
+    .directive('myDomDirective', function () {
+    return {
+        link: function ($scope, element, attrs) {
+            element.bind('click', function () {
+                element.html('You clicked me!');
+            });
+            element.bind('mouseenter', function () {
+                element.css('background-color', 'yellow');
+            });
+            element.bind('mouseleave', function () {
+                element.css('background-color', 'white');
+            });
+            alert(attrs.testAttr); //The way to parse in parameters to a directive
+        }
+    };
+});;
+  </script>
+</body>
+</html>

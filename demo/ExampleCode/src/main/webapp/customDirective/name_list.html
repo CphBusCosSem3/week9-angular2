@@ -1,0 +1,6 @@
+<div>
+  <input ng-model="name" />{{name}}<br>
+  <button ng-click="submitName()">Add a name</button><br>
+  Here are all the names:
+  <p ng-repeat='name in nameList' ng-bind="name"></p>
+</div>

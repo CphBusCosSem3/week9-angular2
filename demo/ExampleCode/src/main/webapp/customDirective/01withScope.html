@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.js"></script>
+        <style>
+            name-list { color:blue; } /* element name */
+            [name-list] { color:red; } /* attribute */
+            .name-list { color:green; } /* class member */
+        </style>
+    </head>
+    <body ng-app="app">
+    <name-list>Hello from the name-list as element name</name-list>
+    <div name-list="">Hello from the name-list as an attribute name</div>
+    <div class='name-list'>Hello from the name-list as a class member</div>
+    <script>
+        var controller = function ($scope) {
+            $scope.nameList = ['Peter', 'Karen', 'Soniya', 'Hakim'];
+            $scope.submitName = function () {
+                $scope.nameList.push($scope.name);
+            };
+        };
+
+        angular.module('app', [])
+                .directive('nameList', function () {
+                    var directive = {
+                        templateUrl: 'name_list.html',
+                        scope: true, //Remove this to prevent individual scope for each element using this directive - Try and see the result on the list after adding more names via the input field.
+                        restrict: 'AEC', // allowed use are both attribute, element and class (not comment)
+                        controller: controller
+                    };
+                    return directive;
+                });
+    </script>
+</body>
+</html>
